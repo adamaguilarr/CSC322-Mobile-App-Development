@@ -3,6 +3,8 @@ import 'package:expense_tracker/widgets/new_expense.dart';
 import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/widgets/chart/chart.dart';
+import 'package:expense_tracker/services/expense_storage.dart';
+import 'package:expense_tracker/widgets/expense_details.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -12,6 +14,20 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
+  @override
+  void initState() {
+    super.initState();
+    ExpenseStorage.loadAll().then((items) {
+      if (items.isNotEmpty) {
+        setState(() {
+          _registeredExpenses
+            ..clear()
+            ..addAll(items);
+        });
+      }
+    });
+  }
+
   final List<Expense> _registeredExpenses = [
     Expense(title: 'Flutter Course',
     amount: 19.99,
@@ -34,9 +50,21 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
-  void _addExpense(Expense expense) {
+  
+  void _openDetails(Expense expense) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ExpenseDetails(
+          expense: expense,
+          onDelete: () => _removeExpense(expense),
+        ),
+      ),
+    );
+  }
+void _addExpense(Expense expense) {
     setState(() {
       _registeredExpenses.add(expense);
+    ExpenseStorage.saveAll(_registeredExpenses);
     });
   }
 
@@ -44,6 +72,7 @@ class _ExpensesState extends State<Expenses> {
     final expenseIndex = _registeredExpenses.indexOf(expense);
     setState(() {
       _registeredExpenses.remove(expense);
+    ExpenseStorage.saveAll(_registeredExpenses);
     });
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -74,6 +103,7 @@ class _ExpensesState extends State<Expenses> {
       mainContent = ExpensesList(
         expenses: _registeredExpenses,
         onRemoveExpense: _removeExpense,
+        onTapExpense: _openDetails,
       );
     }
 

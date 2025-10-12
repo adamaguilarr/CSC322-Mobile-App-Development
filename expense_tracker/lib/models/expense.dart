@@ -32,6 +32,24 @@ class Expense {
   String get formattedDate {
     return formatter.format(date);
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'amount': amount,
+    'date': date.toIso8601String(),
+    'category': category.name,
+  };
+
+  factory Expense.fromJson(Map<String, dynamic> json) => Expense(
+    title: json['title'] as String,
+    amount: (json['amount'] as num).toDouble(),
+    date: DateTime.parse(json['date'] as String),
+    category: Category.values.firstWhere(
+      (c) => c.name == (json['category'] as String),
+      orElse: () => Category.leisure,
+    ),
+  );
 }
 
 class ExpenseBucket {
