@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:expense_tracker/models/expense.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
 
 class NewExpense extends StatefulWidget {
   const NewExpense({super.key, required this.onAddExpense});
@@ -19,6 +21,7 @@ class _NewExpenseState extends State<NewExpense> {
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
   Category _selectedCategory = Category.leisure;
+  int _rating = 0;
 
   void _presentDatePicker() async {
     final now = DateTime.now();
@@ -87,6 +90,7 @@ class _NewExpenseState extends State<NewExpense> {
         amount: enteredAmount,
         date: _selectedDate!,
         category: _selectedCategory,
+        rating: _rating,
       ),
     );
     Navigator.pop(context);
@@ -222,6 +226,32 @@ class _NewExpenseState extends State<NewExpense> {
                       ],
                     ),
                   )
+                ],
+              ),
+              const SizedBox(height: 16),
+              //Rating input using flutter_rating_bar
+              Row(
+                children: [
+                  const Text('Rating:'),
+                  const SizedBox(width: 12),
+                  RatingBar.builder(
+                    initialRating: _rating.toDouble(),
+                    minRating: 0,
+                    direction: Axis.horizontal,
+                    allowHalfRating: false,
+                    itemCount: 5,
+                    itemSize: 28,
+                    unratedColor: Colors.grey.shade300,
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {
+                      setState(() {
+                        _rating = rating.toInt();
+                      });
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 16),

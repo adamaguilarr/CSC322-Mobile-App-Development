@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/models/expense.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ExpenseItem extends StatelessWidget {
   const ExpenseItem(this.expense, {super.key});
@@ -32,6 +33,24 @@ class ExpenseItem extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(expense.formattedDate),
                   ]
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            //rating display
+            Row(
+              children: [
+                const Text('Rating:'),
+                const SizedBox(width: 8),
+                RatingBarIndicator(
+                  rating: expense.rating.toDouble(),
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  itemCount: 5,
+                  itemSize: 18.0,
+                  unratedColor: Colors.grey.shade300,
                 ),
               ],
             ),

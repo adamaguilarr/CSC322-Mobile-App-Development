@@ -33,11 +33,13 @@ class _ExpensesState extends State<Expenses> {
     amount: 19.99,
     date: DateTime.now(),
     category: Category.work,
+    rating: 4,
   ),
     Expense(title: 'Cinema',
     amount: 15.69,
     date: DateTime.now(),
     category: Category.leisure,
+    rating: 3,
   ),
   ];
 
